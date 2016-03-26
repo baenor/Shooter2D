@@ -3,28 +3,31 @@ using System.Collections;
 
 public class CameraBehaviour : MonoBehaviour {
 
-    Transform player;
+    //VARIABILI NECESSARIE
+    GameObject player;
+    Vector3 targetPosition;
+    
+    //VARIABILI PUBBLICHE
+    public float offset = -13f;
+    public float smooth = 5f;
 
-    Vector3 velocity = Vector3.zero;
 
-    [SerializeField]
-    float offset = -9f;
-
-    [SerializeField]
-    float smooth = 0.3f;
-
-	// Use this for initialization
-	void Start () {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+    // Funzione Start: qui di solito vengono inizializzate le variabili, 
+    // tramite le funzioni GetComponent. In questo caso, conserviamo dentro
+    // la variabile player il nostro giocatore, cercandolo tramite TAG!(utilizzeremo un sacco i TAG!)
+    void Start () {
+        player = GameObject.FindGameObjectWithTag("Player");
+      
 	}
 	
-	// Update is called once per frame
+	// Qui non faremo altro che verificare la posizione del nostro giocatore, inserendola su targetPosition nella quale 
+    // sommiamo l'altezza dove vogliamo che la camera si trovi (ecco giustificato il +offset che potrete variare tramite variabile pubblica)
+    // e infine usiamo la funzione Vector3.Lerp per spostare secondo "smooth" la camera sulla posizione del giocatore
 	void Update () {
-	    if(player != null)
+        if (player != null)
         {
-            Vector3 targetPosition = new Vector3(player.position.x, player.position.y, player.position.z + offset);
-            transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smooth);
-
+            targetPosition = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z + offset);
+            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime + smooth); 
         }
-	}
+    }
 }
