@@ -6,39 +6,44 @@ public class PlayerDamage : MonoBehaviour {
 
     [SerializeField]
     int health = 100;
-    Text playerHealth;
-    AudioSource hit;
 
-    void Start()
-    {
-        playerHealth = GameObject.FindGameObjectWithTag("PlayerHealth").GetComponent<Text>();
+    public Text playerHealth;
+
+    AudioSource[] aSources;
+
+
+    // Use this for initialization
+    void Start () {
+        //GameObject.FindGameObjectWithTag("PlayerHealth").GetComponent<Text>();
         playerHealth.text = health.ToString();
-        var aSources = GetComponents<AudioSource>();
-        hit = aSources[0];
-    }
+        aSources = GetComponents<AudioSource>();
+	}
+	
     public void ZombieHit()
     {
+        int random = Random.Range(1, 3);
+        aSources[random].Play();
+
         int damage = Random.Range(15, 26);
         health -= damage;
-        if (health <= 0)
+        
+        if(health <= 0)
         {
             playerHealth.text = 0.ToString();
-            GameManager.gameManager.PlayerIsDead();
             SpawnRandomBlood();
-
+            GameManager.gameManager.PlayerIsDead();
             Destroy(gameObject);
         }
         else
         {
             playerHealth.text = health.ToString();
-            hit.Play();
         }
     }
-    //Classifca funzione di spawn del sangue
+
+
     void SpawnRandomBlood()
     {
-        int random = Random.Range(1, 4);
+        int random = Random.Range(1, 5);
         Instantiate(Resources.Load("Blood" + random), transform.position, Quaternion.identity);
     }
-   
 }
